@@ -16,6 +16,23 @@ def get_events():
     if SETTINGS['EXTRACT_FROM_PDF']:
         return extract_events_from_pdf()
 
+    events = []
+    count = int(input('enter the amount of events you want to add'))
+    for k in range(count):
+        event = dict()
+        event['title'] = str(input('enter the name of new event'))
+        event['date'] = str(input('enter the date of event  like this <YYYYMMDD> 20210925'))
+        event['start_time'] = str(input('enter the start time like this <HHMMSS> 093000'))
+        event['end_time'] = str(input('enter the start time like this <HHMMSS> 153000'))
+        events.append(event)
+
+    return events
+
+
+
+
+
+
 
 
 
