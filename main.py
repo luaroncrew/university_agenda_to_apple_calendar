@@ -1,16 +1,13 @@
 import logging
 
 from data_collector import get_setup
-
-# settings
-SETTINGS = {
-    'EXTRACTING_FROM_PDF': False
-}
+from ics_file_builder import create_calendar
 
 
-def main(email, ):
+def main(email):
     logging.info('reading setup')
     setup = get_setup()
+    create_calendar(setup)
 
 
 if __name__ == '__main__':
