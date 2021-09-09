@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+import smtplib
 
 from settings import SETTINGS
 
@@ -21,6 +22,7 @@ def get_setup():
 def get_events():
     logging.info('getting events from user')
     if SETTINGS['EXTRACTING_FROM_PDF']:
+
         return
 
     events = []
