@@ -1,31 +1,20 @@
 import logging
-import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
-from dotenv import load_dotenv
-
-logging.basicConfig(level=logging.INFO)
-load_dotenv()
-
-SENDER = os.getenv('EMAIL_LOGIN')
-DESTINATION = os.getenv('DESTINATION')
-PASSWORD = os.getenv('EMAIL_PASSWORD')
-
-msg = MIMEMultipart('This is test mail')
-
-msg['Subject'] = 'Test mail'
-msg['From'] = SENDER
-msg['To'] = DESTINATION
 
 
-attachment = open('calendar.ics', "rb")
-p = MIMEApplication(attachment.read(), _subtype="ics")
-p.add_header('Content-Disposition', "attachment; filename=calendar.ics")
-msg.attach(p)
+def send_calendar(sender, destination, password):
+    msg = MIMEMultipart('Here is your agenda for the next week')
+    msg['Subject'] = 'agenda'
+    msg['From'] = sender
+    msg['To'] = destination
+    attachment = open('agenda.ics', "rb")
+    p = MIMEApplication(attachment.read(), _subtype="ics")
+    p.add_header('Content-Disposition', "attachment; filename=calendar.ics")
+    msg.attach(p)
 
-
-with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-    server.login(SENDER, PASSWORD)
-    server.sendmail(SENDER, DESTINATION, msg.as_string())
-    logging.info('message sent successfully')
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        server.login(sender, password)
+        server.sendmail(sender, destination, msg.as_string())
+        logging.info('message sent successfully')

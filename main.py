@@ -1,13 +1,16 @@
 import logging
 import os
-import random
-import smtplib
+from dotenv import load_dotenv
 
+from mail_exporter import send_calendar
 from settings import SETTINGS
 
 
-def send_calendar(calendar):
-    pass
+load_dotenv()
+
+SENDER = os.getenv('EMAIL_LOGIN')
+DESTINATION = os.getenv('DESTINATION')
+PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 
 def get_setup():
@@ -41,17 +44,16 @@ def get_events():
 
 def create_calendar(setup):
     logging.info('creating calendar')
-    # creating new calendar file
-    if SETTINGS['DEBUG']:
-        destination = f'{random.randint(1, 120301283)}.ics'
-    else:
-        destination = 'calendar.ics'
 
+    # creating new calendar file
+    destination = 'agenda.ics'
     calendar = open(destination, mode='w')
     logging.info('writing current setup to calendar')
+
     # adding our setup to calendar
     calendar.write(setup)
     logging.info('setup added')
+
     # getting and creating vevents for calendar
     events = get_events()
     logging.info('writing events to calendar')
@@ -72,10 +74,9 @@ def create_calendar(setup):
     # closing calendar, exporting it and deleting temp calendar file
     calendar.close()
 
-    send_calendar(calendar)
+    send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD)
 
-    if SETTINGS['DEBUG'] is False:
-        os.remove('calendar.ics')
+    os.remove('agenda.ics')
 
 
 def main():
