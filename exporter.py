@@ -3,7 +3,8 @@ import os
 import logging
 from dotenv import load_dotenv
 
-
+logging.basicConfig(level=logging.INFO)
+logging.info('sending started')
 load_dotenv()
 
 DESTINATION = os.getenv('DESTINATION')
@@ -13,7 +14,7 @@ LOGIN = os.getenv('EMAIL_LOGIN')
 sent_from = LOGIN
 to = DESTINATION
 subject = 'OMG Super Important Message'
-body = 'YO ITS MAIL'
+body = 'ssshhhiiittt'
 
 email_text = """\
 From: %s
@@ -21,8 +22,9 @@ To: %s
 Subject: %s
 
 %s
-""" % (sent_from, ", ".join(to), subject, body)
+""" % (sent_from, to, subject, body)
 
+logging.info('connection opened')
 server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 server.ehlo()
 server.login(LOGIN, PASSWORD)
