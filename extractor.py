@@ -25,6 +25,7 @@ def stringify_time(time):
 
 
 def read_agenda(sheet):
+    events = []
     needed_ranges = []
     ranges = sheet.merged_cells.ranges
     for cell_range in ranges:
@@ -38,7 +39,9 @@ def read_agenda(sheet):
 
     for event_range in needed_ranges:
         read_cell_indexes = str(event_range).split(':')
+
         print(read_cell_indexes)
+
         # reading start time cell index
         start_time = str()
         for element in read_cell_indexes[0]:
@@ -53,9 +56,10 @@ def read_agenda(sheet):
 
         start_time = START_TIME + (int(start_time) - 8) / 2
         end_time = START_TIME + (int(end_time) - 8) / 2 + 0.5
+
         start_time = stringify_time(start_time)
         end_time = stringify_time(end_time)
-        print(start_time, end_time)
+
 
 
 
