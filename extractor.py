@@ -26,6 +26,7 @@ def stringify_time(time):
 
 def read_agenda(sheet):
     events = []
+    dates = []
     needed_ranges = []
     ranges = sheet.merged_cells.ranges
     for cell_range in ranges:
@@ -36,6 +37,9 @@ def read_agenda(sheet):
             continue
         if lesson_in_my_agenda(content):
             needed_ranges.append(cell_range)
+
+        if len(content.split('/')) >= 3:
+            dates.append(cell_range)
 
     for event_range in needed_ranges:
         read_cell_indexes = str(event_range).split(':')
@@ -60,9 +64,14 @@ def read_agenda(sheet):
         start_time = stringify_time(start_time)
         end_time = stringify_time(end_time)
 
+        print(start_time, end_time, sh[read_cell_indexes[0]].value)
 
 
-
+def sopostavlenie():
+    """надо написать функцию, которая сопоставляет
+     дату-день недели, затем уроки-день недели и потом
+    сопоставляет уроки и дни"""
+    pass
 
 
 read_agenda(sh)
