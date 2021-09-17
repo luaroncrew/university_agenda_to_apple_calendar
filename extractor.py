@@ -2,7 +2,8 @@ from openpyxl import load_workbook
 import settings
 
 
-wednesday_letters = settings.SETTINGS['WEDNESDAY_LETTERS']
+weekday_letters = settings.WEEKDAY_LETTERS
+
 
 wb = load_workbook('example.xlsx', data_only=True)
 sh = wb['Semaine 37 - 2021']
@@ -24,27 +25,48 @@ def stringify_time(time):
     return hours + minutes + '00'
 
 
+def get_date(cell_range, dates):
+    # getting first letter
+    cell_main_letter = str(cell_range)[0]
+
+    # adding second letter if exists
+    if str(cell_range)[1].isalpha():
+        cell_main_letter += str(cell_range)[1]
+
+    # filtering
+    for index, letters in enumerate(weekday_letters):
+        if cell_main_letter in letters:
+            return dates[index]
+
+
 def read_agenda(sheet):
-    events = []
     dates = []
     needed_ranges = []
+
+    # getting ranges to treat
     ranges = sheet.merged_cells.ranges
+
+    # filtering ranges
     for cell_range in ranges:
         coordinate = str(cell_range).split(':')
         content = sheet[coordinate[0]].value
+
         # instead of using try for non-type cells
         if content is None:
             continue
+
+        # checking if lesson is for my group
         if lesson_in_my_agenda(content):
             needed_ranges.append(cell_range)
 
+        # checking if cell range is date
         if len(content.split('/')) >= 3:
             dates.append(cell_range)
 
+    events = []
+    # reading ranges with their times
     for event_range in needed_ranges:
         read_cell_indexes = str(event_range).split(':')
-
-        print(read_cell_indexes)
 
         # reading start time cell index
         start_time = str()
@@ -61,17 +83,17 @@ def read_agenda(sheet):
         start_time = START_TIME + (int(start_time) - 8) / 2
         end_time = START_TIME + (int(end_time) - 8) / 2 + 0.5
 
-        start_time = stringify_time(start_time)
-        end_time = stringify_time(end_time)
+        event_start_time = stringify_time(start_time)
+        event_end_time = stringify_time(end_time)
 
-        print(start_time, end_time, sh[read_cell_indexes[0]].value)
+        # reading date
+        date_cell = get_date(event_range, dates)
+        date = sh[str(date_cell).split(':')[0]].value
+        summary = sh[read_cell_indexes[0]].value
+
+        print(event_start_time, event_end_time, date, summary)
 
 
-def sopostavlenie():
-    """надо написать функцию, которая сопоставляет
-     дату-день недели, затем уроки-день недели и потом
-    сопоставляет уроки и дни"""
-    pass
 
 
 read_agenda(sh)
