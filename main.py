@@ -80,7 +80,7 @@ def create_calendar(setup):
 
     send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD)
 
-    # os.remove('agenda.ics')
+    os.remove('agenda.ics')
 
 
 def main():

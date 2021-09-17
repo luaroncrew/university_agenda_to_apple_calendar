@@ -104,7 +104,7 @@ def read_agenda(sheet):
             'date': event_date,
             'start_time': event_start_time,
             'end_time': event_end_time,
-            'title': summary
+            'title': summary.split('\n')[0]
         }
 
         events.append(event)
