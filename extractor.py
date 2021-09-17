@@ -106,9 +106,11 @@ def read_agenda(sheet):
             'end_time': event_end_time,
             'title': summary
         }
-        print(event_start_time, event_end_time, event_date, summary)
+
+        events.append(event)
+
+    return events
 
 
-
-
-read_agenda(sh)
+if __name__ == '__main__':
+    read_agenda(sh)

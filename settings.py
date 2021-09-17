@@ -1,6 +1,6 @@
 # settings
 SETTINGS = {
-    'EXTRACTING_FROM_PDF': False,
+    'EXTRACTING_FROM_PDF': True,
     'DEBUG': True,
     'GROUP': 'STID-1-21',
     'MONDAY_LETTERS': ['B', 'C'],

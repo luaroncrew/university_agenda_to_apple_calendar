@@ -1,6 +1,7 @@
 import logging
 import os
 from dotenv import load_dotenv
+from openpyxl import load_workbook
 
 from mail_exporter import send_calendar
 from settings import SETTINGS
@@ -12,6 +13,9 @@ load_dotenv()
 SENDER = os.getenv('EMAIL_LOGIN')
 DESTINATION = os.getenv('DESTINATION')
 PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+wb = load_workbook('example.xlsx', data_only=True)
+sh = wb['Semaine 37 - 2021']
 
 
 def get_setup():
@@ -26,8 +30,7 @@ def get_setup():
 def get_events():
     logging.info('getting events from user')
     if SETTINGS['EXTRACTING_FROM_PDF']:
-
-        return
+        return read_agenda(sh)
 
     events = []
     count = int(input('enter the amount of events you want to add'))
@@ -77,7 +80,7 @@ def create_calendar(setup):
 
     send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD)
 
-    os.remove('agenda.ics')
+    # os.remove('agenda.ics')
 
 
 def main():
