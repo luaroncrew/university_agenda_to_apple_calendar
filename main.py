@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from mail_exporter import send_calendar
 from settings import SETTINGS
+from extractor import read_agenda
 
 
 load_dotenv()

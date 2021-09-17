@@ -19,6 +19,12 @@ def lesson_in_my_agenda(lesson):
     return True
 
 
+def stringify_date(date: str):
+    date_elements = date.split('/')
+    string_date = date_elements[2] + date_elements[1] + date_elements[0]
+    return string_date
+
+
 def stringify_time(time):
     hours = str(int(time))
     minutes = '30' if time % 1 != 0 else '00'
@@ -89,9 +95,18 @@ def read_agenda(sheet):
         # reading date
         date_cell = get_date(event_range, dates)
         date = sh[str(date_cell).split(':')[0]].value
+        event_date = stringify_date(date)
+
+        # getting summary
         summary = sh[read_cell_indexes[0]].value
 
-        print(event_start_time, event_end_time, date, summary)
+        event = {
+            'date': event_date,
+            'start_time': event_start_time,
+            'end_time': event_end_time,
+            'title': summary
+        }
+        print(event_start_time, event_end_time, event_date, summary)
 
 
 
