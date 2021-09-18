@@ -4,7 +4,7 @@ import settings
 
 weekday_letters = settings.WEEKDAY_LETTERS
 
-
+# TODO: try loading workbooks list
 wb = load_workbook('example.xlsx', data_only=True)
 sh = wb['Semaine 37 - 2021']
 START_TIME = 8
@@ -61,6 +61,10 @@ def read_agenda(sheet):
         if content is None:
             continue
 
+        # checking if value is number
+        if isinstance(content, int):
+            continue
+
         # checking if lesson is for my group
         if lesson_in_my_agenda(content):
             needed_ranges.append(cell_range)
@@ -70,6 +74,14 @@ def read_agenda(sheet):
             dates.append(cell_range)
 
     events = []
+
+    # TODO: debug
+    dates.pop()
+    dates.pop()
+    for date in dates:
+        cell_index = str(date).split(':')[0]
+        print(sheet[cell_index].value)
+
     # reading ranges with their times
     for event_range in needed_ranges:
         read_cell_indexes = str(event_range).split(':')

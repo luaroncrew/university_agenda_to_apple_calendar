@@ -14,8 +14,8 @@ SENDER = os.getenv('EMAIL_LOGIN')
 DESTINATION = os.getenv('DESTINATION')
 PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-wb = load_workbook('example.xlsx', data_only=True)
-sh = wb['Semaine 37 - 2021']
+wb = load_workbook('examp.xlsx', data_only=True)
+sh = wb['Semaine 38 - 2021']
 
 
 def get_setup():
@@ -28,7 +28,7 @@ def get_setup():
 
 
 def get_events():
-    logging.info('getting events from user')
+    logging.info('getting events')
     if SETTINGS['EXTRACTING_FROM_PDF']:
         return read_agenda(sh)
 
@@ -46,6 +46,7 @@ def get_events():
     return events
 
 
+# TODO: make file division by 10 events
 def create_calendar(setup):
     logging.info('creating calendar')
 
