@@ -1,3 +1,5 @@
+import logging
+
 from openpyxl import load_workbook
 import settings
 
@@ -5,8 +7,8 @@ import settings
 weekday_letters = settings.WEEKDAY_LETTERS
 
 # TODO: try loading workbooks list
-wb = load_workbook('example.xlsx', data_only=True)
-sh = wb['Semaine 37 - 2021']
+wb = load_workbook('examp.xlsx', data_only=True)
+sh = wb['Semaine 38 - 2021']
 START_TIME = 8
 
 
@@ -20,6 +22,7 @@ def lesson_in_my_agenda(lesson):
 
 
 def stringify_date(date: str):
+    logging.debug(f'object{date} received')
     date_elements = date.split('/')
     string_date = date_elements[2] + date_elements[1] + date_elements[0]
     return string_date
@@ -45,6 +48,7 @@ def get_date(cell_range, dates):
             return dates[index]
 
 
+# FIXME: make it load the needed excel file for execution from main
 def read_agenda(sheet):
     dates = []
     needed_ranges = []
@@ -73,14 +77,13 @@ def read_agenda(sheet):
         if len(content.split('/')) >= 3:
             dates.append(cell_range)
 
-    events = []
-
-    # TODO: debug
     dates.pop()
     dates.pop()
+    print(dates)
     for date in dates:
         cell_index = str(date).split(':')[0]
         print(sheet[cell_index].value)
+    events = []
 
     # reading ranges with their times
     for event_range in needed_ranges:
@@ -125,4 +128,4 @@ def read_agenda(sheet):
 
 
 if __name__ == '__main__':
-    read_agenda(sh)
+    print(read_agenda(sh))

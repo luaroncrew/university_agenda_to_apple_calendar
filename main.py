@@ -7,6 +7,7 @@ from mail_exporter import send_calendar
 from settings import SETTINGS
 from extractor import read_agenda
 
+# TODO: make simple tests for main functions
 
 load_dotenv()
 
@@ -85,7 +86,7 @@ def create_calendar(setup):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logging.info('building started')
     setup = get_setup()
     create_calendar(setup)
