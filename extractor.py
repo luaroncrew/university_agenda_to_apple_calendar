@@ -24,7 +24,6 @@ def lesson_in_my_agenda(lesson):
 
 
 def stringify_date(date: str):
-    logging.debug(f'object{date} received')
     date_elements = date.split('/')
     string_date = date_elements[2] + date_elements[1] + date_elements[0]
     return string_date
@@ -32,6 +31,8 @@ def stringify_date(date: str):
 
 def stringify_time(time):
     hours = str(int(time))
+    if len(hours) == 1:
+        hours = '0' + hours
     minutes = '30' if time % 1 != 0 else '00'
     return hours + minutes + '00'
 
@@ -50,7 +51,6 @@ def get_date(cell_range, dates):
             return dates[index]
 
 
-# FIXME: make it load the needed excel file for execution from main
 def read_agenda(sheet):
     dates = []
     needed_ranges = []
@@ -84,10 +84,10 @@ def read_agenda(sheet):
         for k in range(len(dates)-5):
             dates.pop()
 
-    print(dates)
-    for date in dates:
-        cell_index = str(date).split(':')[0]
-        print(sheet[cell_index].value)
+    # for date in dates:
+    #     cell_index = str(date).split(':')[0]
+    #     print(sheet[cell_index].value)
+
     events = []
 
     # reading ranges with their times

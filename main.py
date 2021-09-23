@@ -60,21 +60,16 @@ def write_events(events, calendar):
         logging.info(f'event {event["title"]} successfully writen')
 
 
-# TODO: make file division by 10 events
-def create_calendar(setup, calendar_name):
+def create_calendar(setup, calendar_name, events):
     logging.info(f'creating calendar {calendar_name}')
 
     # creating new calendar file
-    calendar = open(calendar_name, mode='w')
-    logging.info('writing current setup to calendar')
+    calendar = open(calendar_name + '.ics', mode='w')
 
-    # adding our setup to calendar
+    # write setup to calendar
     calendar.write(setup)
-    logging.info('setup added')
 
-    # getting and creating vevents for calendar
-    events = get_events()
-    logging.info('writing events to calendar')
+    # writing events
     write_events(events, calendar)
 
     # writing closing calendar tag to file before returning it
@@ -83,16 +78,17 @@ def create_calendar(setup, calendar_name):
     # closing calendar, exporting it and deleting temp calendar file
     calendar.close()
 
-    send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD)
+    send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD, filename=calendar_name)
 
-    os.remove(calendar_name)
+    os.remove(calendar_name + '.ics')
 
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.info('building started')
     setup = get_setup()
-    create_calendar(setup, 'agenda.ics')
+    events = get_events()
+    create_calendar(setup, 'agenda', events=events)
 
 
 if __name__ == '__main__':
