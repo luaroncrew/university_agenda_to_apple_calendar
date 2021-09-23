@@ -4,7 +4,6 @@
 SETTINGS = {
     'EXTRACTING_FROM_PDF': True,
     'DEBUG': True,
-    'GROUP': 'STID-1-21',
 }
 
 WEEKDAY_LETTERS = [

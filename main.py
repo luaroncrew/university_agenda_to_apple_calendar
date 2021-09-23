@@ -47,22 +47,7 @@ def get_events():
     return events
 
 
-# TODO: make file division by 10 events
-def create_calendar(setup):
-    logging.info('creating calendar')
-
-    # creating new calendar file
-    destination = 'agenda.ics'
-    calendar = open(destination, mode='w')
-    logging.info('writing current setup to calendar')
-
-    # adding our setup to calendar
-    calendar.write(setup)
-    logging.info('setup added')
-
-    # getting and creating vevents for calendar
-    events = get_events()
-    logging.info('writing events to calendar')
+def write_events(events, calendar):
     for event in events:
         vevent_string = str()
         vevent_string += 'BEGIN:VEVENT\n'
@@ -74,6 +59,24 @@ def create_calendar(setup):
         calendar.write(vevent_string)
         logging.info(f'event {event["title"]} successfully writen')
 
+
+# TODO: make file division by 10 events
+def create_calendar(setup, calendar_name):
+    logging.info(f'creating calendar {calendar_name}')
+
+    # creating new calendar file
+    calendar = open(calendar_name, mode='w')
+    logging.info('writing current setup to calendar')
+
+    # adding our setup to calendar
+    calendar.write(setup)
+    logging.info('setup added')
+
+    # getting and creating vevents for calendar
+    events = get_events()
+    logging.info('writing events to calendar')
+    write_events(events, calendar)
+
     # writing closing calendar tag to file before returning it
     calendar.write('END:VCALENDAR\n')
 
@@ -82,14 +85,14 @@ def create_calendar(setup):
 
     send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD)
 
-    os.remove('agenda.ics')
+    os.remove(calendar_name)
 
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
     logging.info('building started')
     setup = get_setup()
-    create_calendar(setup)
+    create_calendar(setup, 'agenda.ics')
 
 
 if __name__ == '__main__':

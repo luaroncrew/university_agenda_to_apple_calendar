@@ -1,5 +1,7 @@
 import logging
 
+# TODO: implement pytest
+# TODO: set logging
 from openpyxl import load_workbook
 import settings
 
@@ -77,8 +79,11 @@ def read_agenda(sheet):
         if len(content.split('/')) >= 3:
             dates.append(cell_range)
 
-    dates.pop()
-    dates.pop()
+    # sometimes there are some additional dates in agenda, they must be deleted
+    if len(dates) > 5:
+        for k in range(len(dates)-5):
+            dates.pop()
+
     print(dates)
     for date in dates:
         cell_index = str(date).split(':')[0]
@@ -109,11 +114,11 @@ def read_agenda(sheet):
 
         # reading date
         date_cell = get_date(event_range, dates)
-        date = sh[str(date_cell).split(':')[0]].value
+        date = sheet[str(date_cell).split(':')[0]].value
         event_date = stringify_date(date)
 
         # getting summary
-        summary = sh[read_cell_indexes[0]].value
+        summary = sheet[read_cell_indexes[0]].value
 
         event = {
             'date': event_date,
