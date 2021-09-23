@@ -1,21 +1,24 @@
-import logging
-
-# TODO: implement pytest
-# TODO: set logging
 from openpyxl import load_workbook
 import settings
 
 
+# settings
 weekday_letters = settings.WEEKDAY_LETTERS
-
-# TODO: try loading workbooks list
-wb = load_workbook('examp.xlsx', data_only=True)
-sh = wb['Semaine 38 - 2021']
 START_TIME = 8
 
 
-def lesson_in_my_agenda(lesson):
+wb = load_workbook('examp.xlsx', data_only=True)
+sh = wb['Semaine 38 - 2021']
+
+
+def lesson_in_my_agenda(lesson) -> bool:
+    """
+    Filtering function.
+    if cell's content is your lesson, returns True
+    """
+
     content = lesson.split()
+    # TODO: make smart filtering when you only need to choose your group
     groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22']
     for group in groups_to_exclude:
         if (group in content) or (len(content) < 6):
@@ -23,13 +26,19 @@ def lesson_in_my_agenda(lesson):
     return True
 
 
-def stringify_date(date: str):
+def stringify_date(date: str) -> str:
+    """
+    returns date in appropriate way for agenda
+    """
     date_elements = date.split('/')
     string_date = date_elements[2] + date_elements[1] + date_elements[0]
     return string_date
 
 
-def stringify_time(time):
+def stringify_time(time) -> str:
+    """
+    returns time in appropriate way for agenda
+    """
     hours = str(int(time))
     if len(hours) == 1:
         hours = '0' + hours
@@ -38,6 +47,11 @@ def stringify_time(time):
 
 
 def get_date(cell_range, dates):
+    """
+    comparing merged cell's first letter to weekday letters from settings,
+    if date is found for the letter, return date connected to the cell
+    """
+
     # getting first letter
     cell_main_letter = str(cell_range)[0]
 
@@ -51,7 +65,12 @@ def get_date(cell_range, dates):
             return dates[index]
 
 
-def read_agenda(sheet):
+def read_agenda(sheet) -> list:
+    """
+    reading excel files to extract events from them,
+    returns list of dicts containing event information:
+    time, summary, date
+    """
     dates = []
     needed_ranges = []
 
@@ -84,12 +103,7 @@ def read_agenda(sheet):
         for k in range(len(dates)-5):
             dates.pop()
 
-    # for date in dates:
-    #     cell_index = str(date).split(':')[0]
-    #     print(sheet[cell_index].value)
-
     events = []
-
     # reading ranges with their times
     for event_range in needed_ranges:
         read_cell_indexes = str(event_range).split(':')
@@ -119,6 +133,8 @@ def read_agenda(sheet):
 
         # getting summary
         summary = sheet[read_cell_indexes[0]].value
+
+        # TODO: try to extract the cabinet number
 
         event = {
             'date': event_date,

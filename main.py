@@ -11,28 +11,37 @@ from extractor import read_agenda
 
 load_dotenv()
 
+# settings
 SENDER = os.getenv('EMAIL_LOGIN')
 DESTINATION = os.getenv('DESTINATION')
 PASSWORD = os.getenv('EMAIL_PASSWORD')
 
+# TODO: try loading workbooks list to automate execution and exclude it from settings
 wb = load_workbook('examp.xlsx', data_only=True)
 sh = wb['Semaine 38 - 2021']
 
 
-def get_setup():
+def get_setup() -> str:
+    """
+    reading agenda setup and returns it as string
+    """
+
     logging.info('getting setup')
     setup_file = open('vcalendar_setup.ics', mode='r')
     setup = setup_file.read() + '\n'
-    logging.info(f'current setup is \n {setup}')
     setup_file.close()
     return setup
 
 
-def get_events():
+def get_events() -> list:
+    # TODO: make excel sheet as param for func
+
     logging.info('getting events')
-    if SETTINGS['EXTRACTING_FROM_PDF']:
+    # if user's choice is extracting events from excel file, reading events from excel
+    if SETTINGS['EXTRACTING_FROM_FILE']:
         return read_agenda(sh)
 
+    # if we want to add events manually, this part of function is used
     events = []
     count = int(input('enter the amount of events you want to add'))
     for k in range(count):
@@ -47,7 +56,10 @@ def get_events():
     return events
 
 
-def write_events(events, calendar):
+def write_events(events: list, calendar):
+    """
+    takes list of events and calendar file then writes every event in appropriate way to file
+    """
     for event in events:
         vevent_string = str()
         vevent_string += 'BEGIN:VEVENT\n'
@@ -78,6 +90,7 @@ def create_calendar(setup, calendar_name, events):
     # closing calendar, exporting it and deleting temp calendar file
     calendar.close()
 
+    # sending calendar to mail from env file
     send_calendar(destination=DESTINATION, sender=SENDER, password=PASSWORD, filename=calendar_name)
 
     os.remove(calendar_name + '.ics')
