@@ -17,8 +17,8 @@ DESTINATION = os.getenv('DESTINATION')
 PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 # TODO: try loading workbooks list to automate execution and exclude it from settings
-wb = load_workbook('examp.xlsx', data_only=True)
-sh = wb['Semaine 38 - 2021']
+wb = load_workbook('example.xlsx', data_only=True)
+sh = wb['Semaine 37 - 2021']
 
 
 def get_setup() -> str:
@@ -33,13 +33,13 @@ def get_setup() -> str:
     return setup
 
 
-def get_events() -> list:
+def get_events(sheet) -> list:
     # TODO: make excel sheet as param for func
 
     logging.info('getting events')
     # if user's choice is extracting events from excel file, reading events from excel
     if SETTINGS['EXTRACTING_FROM_FILE']:
-        return read_agenda(sh)
+        return read_agenda(sheet)
 
     # if we want to add events manually, this part of function is used
     events = []
@@ -97,10 +97,10 @@ def create_calendar(setup, calendar_name, events):
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.info('building started')
     setup = get_setup()
-    events = get_events()
+    events = get_events(sh)
     create_calendar(setup, 'agenda', events=events)
 
 
