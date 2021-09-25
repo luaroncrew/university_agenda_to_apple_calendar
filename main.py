@@ -7,7 +7,6 @@ from mail_exporter import send_calendar
 from settings import SETTINGS
 from extractor import read_agenda
 
-# TODO: make simple tests for main functions
 
 load_dotenv()
 
@@ -15,10 +14,6 @@ load_dotenv()
 SENDER = os.getenv('EMAIL_LOGIN')
 DESTINATION = os.getenv('DESTINATION')
 PASSWORD = os.getenv('EMAIL_PASSWORD')
-
-# TODO: try loading workbooks list to automate execution and exclude it from settings
-wb = load_workbook('example.xlsx', data_only=True)
-sh = wb['Semaine 37 - 2021']
 
 
 def get_setup() -> str:
@@ -34,7 +29,6 @@ def get_setup() -> str:
 
 
 def get_events(sheet) -> list:
-    # TODO: make excel sheet as param for func
 
     logging.info('getting events')
     # if user's choice is extracting events from excel file, reading events from excel
@@ -61,12 +55,15 @@ def write_events(events: list, calendar):
     takes list of events and calendar file then writes every event in appropriate way to file
     """
     for event in events:
+        location = event["location"]
         vevent_string = str()
         vevent_string += 'BEGIN:VEVENT\n'
         vevent_string += 'DTSTAMP:20210904T194914Z\n'  # here we have to add a custom date
         vevent_string += f'DTSTART;TZID=Europe/Paris:{event["date"]}T{event["start_time"]}\n'
         vevent_string += f'DTEND;TZID=Europe/Paris:{event["date"]}T{event["end_time"]}\n'
         vevent_string += f'SUMMARY:{event["title"]}\n'
+        if location is not None:
+            vevent_string += f'LOCATION:{location}\n'
         vevent_string += 'END:VEVENT\n'
         calendar.write(vevent_string)
         logging.info(f'event {event["title"]} successfully writen')
@@ -97,8 +94,13 @@ def create_calendar(setup, calendar_name, events):
 
 
 def main():
+    # loading file
+    wb = load_workbook('examp.xlsx', data_only=True)
+    sh = wb.worksheets[0]
     logging.basicConfig(level=logging.INFO)
     logging.info('building started')
+
+    # writing file and sending
     setup = get_setup()
     events = get_events(sh)
     create_calendar(setup, 'agenda', events=events)

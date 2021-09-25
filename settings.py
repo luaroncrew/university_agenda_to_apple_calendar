@@ -14,3 +14,6 @@ WEEKDAY_LETTERS = [
     ['AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO']
 ]
 
+POSSIBLE_CABINET_NUMBERS = [
+    'Am1', 'Am2'
+]

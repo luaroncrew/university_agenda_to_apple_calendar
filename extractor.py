@@ -5,6 +5,7 @@ import settings
 
 # settings
 weekday_letters = settings.WEEKDAY_LETTERS
+possible_cabinet_numbers = settings.POSSIBLE_CABINET_NUMBERS
 START_TIME = 8
 
 
@@ -64,6 +65,24 @@ def get_date(cell_range, dates):
     for index, letters in enumerate(weekday_letters):
         if cell_main_letter in letters:
             return dates[index]
+
+
+def extract_cabinet_number(lesson: str):
+    """
+    takes merged cell's text as param and returns the cabinet number from it by filtering or None if
+    it doesn't exist
+    """
+
+    for element in lesson.split():
+        # filtering
+        if len(element.split('-')) == 2:
+            if len(element.split('-')[0]) == 1:
+                if len(element.split('-')[1]) == 3:
+                    return element
+        if element in possible_cabinet_numbers:
+            return element
+
+    return None
 
 
 def read_agenda(sheet) -> list:
@@ -132,16 +151,19 @@ def read_agenda(sheet) -> list:
         date = sheet[str(date_cell).split(':')[0]].value
         event_date = stringify_date(date)
 
+        contents = sheet[read_cell_indexes[0]].value
         # getting summary
-        summary = sheet[read_cell_indexes[0]].value
+        summary = contents.split('\n')[0]
 
-        # TODO: try to extract the cabinet number
+        # extracting cabinet number
+        location = extract_cabinet_number(contents)
 
         event = {
             'date': event_date,
             'start_time': event_start_time,
             'end_time': event_end_time,
-            'title': summary.split('\n')[0]
+            'title': summary,
+            'location': location
         }
 
         events.append(event)
