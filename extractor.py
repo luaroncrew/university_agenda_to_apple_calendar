@@ -23,9 +23,27 @@ def lesson_in_my_agenda(lesson) -> bool:
     # TODO: make smart filtering when you only need to choose your group
     groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22']
     for group in groups_to_exclude:
-        if (group in content) or (len(content) < 6):
+        if group in content:
             return False
     return True
+
+
+def is_users_lesson(content) -> bool:
+    """
+    if cell's content looks like a lesson, check by another function if lesson is for
+    user's group. Finally it will return true or false whether it must be in user's agenda
+    or not
+    """
+
+    # checking if it's a lesson
+    elements = content.split()
+    for element in elements:
+        if element in ['TD', 'TP', 'CM']:
+            return lesson_in_my_agenda(content)
+
+    if len(content.split()) >= 6:
+        return lesson_in_my_agenda(content)
+    return False
 
 
 def stringify_date(date: str) -> str:
@@ -91,8 +109,8 @@ def read_agenda(sheet) -> list:
     returns list of dicts containing event information:
     time, summary, date
     """
-    dates = []
-    needed_ranges = []
+    dates_ranges = []
+    lesson_ranges = []
 
     # getting ranges to treat
     ranges = sheet.merged_cells.ranges
@@ -111,21 +129,21 @@ def read_agenda(sheet) -> list:
             continue
 
         # checking if lesson is for my group
-        if lesson_in_my_agenda(content):
-            needed_ranges.append(cell_range)
+        if is_users_lesson(content):
+            lesson_ranges.append(cell_range)
 
         # checking if cell range is date
         if len(content.split('/')) >= 3:
-            dates.append(cell_range)
+            dates_ranges.append(cell_range)
 
-    # sometimes there are some additional dates in agenda, they must be deleted
-    if len(dates) > 5:
-        for k in range(len(dates)-5):
-            dates.pop()
+    # sometimes there are some additional dates_ranges in agenda, they must be deleted
+    if len(dates_ranges) > 5:
+        for k in range(len(dates_ranges) - 5):
+            dates_ranges.pop()
 
     events = []
     # reading ranges with their times
-    for event_range in needed_ranges:
+    for event_range in lesson_ranges:
         read_cell_indexes = str(event_range).split(':')
 
         # reading start time cell index
@@ -147,7 +165,7 @@ def read_agenda(sheet) -> list:
         event_end_time = stringify_time(end_time)
 
         # reading date
-        date_cell = get_date(event_range, dates)
+        date_cell = get_date(event_range, dates_ranges)
         date = sheet[str(date_cell).split(':')[0]].value
         event_date = stringify_date(date)
 
