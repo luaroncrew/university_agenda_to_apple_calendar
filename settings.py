@@ -17,3 +17,11 @@ WEEKDAY_LETTERS = [
 POSSIBLE_CABINET_NUMBERS = [
     'Am1', 'Am2'
 ]
+
+ALL_GROUP_NAMES = [
+    'STID-1-1',
+    'STID-1-2',
+    'STID-1-11',
+    'STID-1-12',
+    'STID-1-22',
+]

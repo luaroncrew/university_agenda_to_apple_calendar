@@ -1,3 +1,4 @@
+import datetime
 from openpyxl import load_workbook
 
 import settings
@@ -9,8 +10,8 @@ possible_cabinet_numbers = settings.POSSIBLE_CABINET_NUMBERS
 START_TIME = 8
 
 
-wb = load_workbook('examp.xlsx', data_only=True)
-sh = wb['Semaine 38 - 2021']
+wb = load_workbook('STID 1.xlsx', data_only=True)
+sh = wb.worksheets[0]
 
 
 def lesson_in_my_agenda(lesson) -> bool:
@@ -21,7 +22,7 @@ def lesson_in_my_agenda(lesson) -> bool:
 
     content = lesson.split()
     # TODO: make smart filtering when you only need to choose your group
-    groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22']
+    groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22', 'STID-1-ECO-1']
     for group in groups_to_exclude:
         if group in content:
             return False
@@ -67,6 +68,8 @@ def stringify_time(time) -> str:
 
 
 def get_date(cell_range, dates):
+
+    # FIXME: remake function for better working
     """
     comparing merged cell's first letter to weekday letters from settings,
     if date is found for the letter, return date connected to the cell
@@ -120,7 +123,6 @@ def read_agenda(sheet) -> list:
         coordinate = str(cell_range).split(':')
         content = sheet[coordinate[0]].value
 
-        # instead of using try for non-type cells
         if content is None:
             continue
 
@@ -133,13 +135,29 @@ def read_agenda(sheet) -> list:
             lesson_ranges.append(cell_range)
 
         # checking if cell range is date
-        if len(content.split('/')) >= 3:
+        if (len(content.split('/')) >= 3) and (len(content.split(' ')) < 2):
             dates_ranges.append(cell_range)
 
+    # making datetime objects out of str-dates to sort and then revert
+    dates = []
+    for cell_range in dates_ranges:
+        dates.append(sheet[str(cell_range).split(':')[0]].value)
+
+    dates = [datetime.datetime.strptime(date, '%d/%m/%Y') for date in dates]
+    dates.sort(reverse=True)
+    dates = [date.strftime('%d/%m/%Y') for date in dates]
+
     # sometimes there are some additional dates_ranges in agenda, they must be deleted
-    if len(dates_ranges) > 5:
-        for k in range(len(dates_ranges) - 5):
-            dates_ranges.pop()
+    if len(dates) > 5:
+        for k in range(len(dates) - 5):
+            dates.pop()
+
+    for cell_range in dates_ranges:
+        if sheet[str(cell_range).split(':')[0]].value not in dates:
+            dates_ranges.remove(cell_range)
+
+    for r in dates_ranges:
+        print(sheet[str(r).split(':')[0]].value)
 
     events = []
     # reading ranges with their times
