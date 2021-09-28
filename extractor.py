@@ -14,12 +14,28 @@ wb = load_workbook('STID 1.xlsx', data_only=True)
 sh = wb.worksheets[0]
 
 
+def get_cells_letter(cell_range):
+    """
+    supporting function for better sorting dates, returns cell's range letter index.
+    if it contains 2 letters, returns 'Z' + letter to release sorting
+    """
+    cell_letter = str()
+    range_first_coordinate = str(cell_range).split(':')[0]
+    for letter in range_first_coordinate:
+        if letter.isalpha():
+            cell_letter += letter
+
+    if len(cell_letter) == 2:
+        cell_letter = 'Z' + cell_letter[1]
+
+    return cell_letter
+
+
 def lesson_in_my_agenda(lesson) -> bool:
     """
     Filtering function.
     if cell's content is your lesson, returns True
     """
-
     content = lesson.split()
     # TODO: make smart filtering when you only need to choose your group
     groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22', 'STID-1-ECO-1']
@@ -156,8 +172,8 @@ def read_agenda(sheet) -> list:
         if sheet[str(cell_range).split(':')[0]].value not in dates:
             dates_ranges.remove(cell_range)
 
-    for r in dates_ranges:
-        print(sheet[str(r).split(':')[0]].value)
+    # to avoid mixing dates we have to sort the cells
+    dates_ranges = sorted(dates_ranges, key=get_cells_letter)
 
     events = []
     # reading ranges with their times
