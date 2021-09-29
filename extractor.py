@@ -7,10 +7,12 @@ import settings
 # settings
 weekday_letters = settings.WEEKDAY_LETTERS
 possible_cabinet_numbers = settings.POSSIBLE_CABINET_NUMBERS
+all_group_names = settings.ALL_GROUP_NAMES
+groups_to_exclude = settings.get_groups_to_exclude()
 START_TIME = 8
 
 
-wb = load_workbook('STID 1.xlsx', data_only=True)
+wb = load_workbook('test_example_3.xlsx', data_only=True)
 sh = wb.worksheets[0]
 
 
@@ -37,8 +39,6 @@ def lesson_in_my_agenda(lesson) -> bool:
     if cell's content is your lesson, returns True
     """
     content = lesson.split()
-    # TODO: make smart filtering when you only need to choose your group
-    groups_to_exclude = ['STID-1-1', 'STID-1-11', 'STID-1-12', 'STID-1-22', 'STID-1-ECO-1']
     for group in groups_to_exclude:
         if group in content:
             return False

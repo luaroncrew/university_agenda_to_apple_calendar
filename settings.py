@@ -23,5 +23,24 @@ ALL_GROUP_NAMES = [
     'STID-1-2',
     'STID-1-11',
     'STID-1-12',
+    'STID-1-21',
     'STID-1-22',
+    'STID-1-ECO-1',
+    'STID-1-ECO-2',
+    'STID-1-MATH',
+    'STID-1-INFO-1',
+    'STID-1-INFO-2'
 ]
+
+USERS_GROUPS = [
+    'STID-1-2',
+    'STID-1-21',
+    'STID-1-ECO-2',
+    'STID-1-MATH'
+]
+
+
+def get_groups_to_exclude():
+    groups_to_exclude = ALL_GROUP_NAMES
+    [groups_to_exclude.remove(item) for item in USERS_GROUPS]
+    return groups_to_exclude

@@ -95,7 +95,7 @@ def create_calendar(setup, calendar_name, events):
 
 def main():
     # loading file
-    wb = load_workbook('STID 1.xlsx', data_only=True)
+    wb = load_workbook('test_example_3.xlsx', data_only=True)
     sh = wb.worksheets[0]
     logging.basicConfig(level=logging.INFO)
     logging.info('building started')

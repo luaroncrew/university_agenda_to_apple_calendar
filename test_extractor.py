@@ -10,6 +10,9 @@ worksheet_1 = wb1.worksheets[0]
 wb2 = load_workbook('test_example_2.xlsx', data_only=True)
 worksheet_2 = wb2.worksheets[0]
 
+wb3 = load_workbook('test_example_3.xlsx', data_only=True)
+worksheet_3 = wb3.worksheets[0]
+
 
 class TestReadAgendaEventsCount:
     """
@@ -20,3 +23,6 @@ class TestReadAgendaEventsCount:
 
     def test_worksheet_2(self):
         assert len(read_agenda(worksheet_2)) == 15
+
+    def test_worksheet_3(self):
+        assert len(read_agenda(worksheet_3)) == 18
