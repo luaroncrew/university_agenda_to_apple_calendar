@@ -20,7 +20,6 @@ def get_setup() -> str:
     """
     reading agenda setup and returns it as string
     """
-
     logging.info('getting setup')
     setup_file = open('vcalendar_setup.ics', mode='r')
     setup = setup_file.read() + '\n'
@@ -29,7 +28,6 @@ def get_setup() -> str:
 
 
 def get_events(sheet) -> list:
-
     logging.info('getting events')
     # if user's choice is extracting events from excel file, reading events from excel
     if SETTINGS['EXTRACTING_FROM_FILE']:

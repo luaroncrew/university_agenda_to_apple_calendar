@@ -51,7 +51,6 @@ def is_users_lesson(content) -> bool:
     user's group. Finally it will return true or false whether it must be in user's agenda
     or not
     """
-
     # checking if it's a lesson
     elements = content.split()
     for element in elements:
@@ -84,13 +83,10 @@ def stringify_time(time) -> str:
 
 
 def get_date(cell_range, dates):
-
-    # FIXME: remake function for better working
     """
     comparing merged cell's first letter to weekday letters from settings,
     if date is found for the letter, return date connected to the cell
     """
-
     # getting first letter
     cell_main_letter = str(cell_range)[0]
 
@@ -109,7 +105,6 @@ def extract_cabinet_number(lesson: str):
     takes merged cell's text as param and returns the cabinet number from it by filtering or None if
     it doesn't exist
     """
-
     for element in lesson.split():
         # filtering
         if len(element.split('-')) == 2:
@@ -209,6 +204,8 @@ def read_agenda(sheet) -> list:
 
         # extracting cabinet number
         location = extract_cabinet_number(contents)
+
+        # TODO: write a function that extracts teacher's name
 
         event = {
             'date': event_date,
